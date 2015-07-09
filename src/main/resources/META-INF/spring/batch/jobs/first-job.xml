@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:batch="http://www.springframework.org/schema/batch"
+	xsi:schemaLocation="http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd">
+
+	<batch:job id="simpleJob">
+		<batch:step id="myStep">
+			<tasklet>
+				<chunk reader="simpleReader" writer="simpleWriter" commit-interval="1" />
+			</tasklet>
+		</batch:step>
+	</batch:job>
+
+	<bean id="simpleReader" class="com.epam.edu.student.job.reader.ExampleItemReader">
+	</bean>
+
+	<bean id="simpleWriter" class="com.epam.edu.student.job.writer.ExampleItemWriter">
+	</bean>
+
+	<batch:job id="taskletJob" restartable="true">
+		<batch:step id="taskletStep">
+			<batch:tasklet ref="firstTasklet" />
+		</batch:step>
+
+	</batch:job>
+
+
+	<bean id="firstTasklet" class="com.epam.edu.student.tasklet.FirstTasklet"
+		scope="step">
+		<property name="testParameter" value="test" />
+	</bean>
+
+
+	<batch:job id="restTemplateRequestJob" restartable="true">
+		<batch:step id="restTemplateStep">
+			<tasklet>
+				<chunk reader="restTemplateReader" processor="restTemplateProcessor"
+					writer="restTemplateWriter" commit-interval="1" />
+			</tasklet>
+		</batch:step>
+	</batch:job>
+
+	<bean id="restTemplateReader" class="com.epam.edu.student.job.reader.RestTemplateReader"
+		scope="step">
+	</bean>
+
+	<bean id="restTemplateProcessor"
+		class="com.epam.edu.student.job.processor.RestTemplateProcessor">
+	</bean>
+
+	<bean id="restTemplateWriter" class="com.epam.edu.student.job.writer.RestTemplateWriter">
+
+	</bean>
+</beans>
